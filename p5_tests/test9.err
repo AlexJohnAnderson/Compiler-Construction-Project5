@@ -1,0 +1,2 @@
+FATAL [2,5]-[2,15]: Invalid equality operation
+Segmentation fault (core dumped)

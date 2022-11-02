@@ -202,7 +202,6 @@ void NotNode::typeAnalysis(TypeAnalysis * ta){
 		ta->nodeType(this, ExpType);
 		return;
 	}
-	
 	ta->errLogicOpd(this->pos());
 	ta->nodeType(this, ErrorType::produce());
 }
@@ -216,7 +215,7 @@ void LessEqNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -229,7 +228,7 @@ void LessEqNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -254,7 +253,7 @@ void LessNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errRelOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -267,7 +266,7 @@ void LessNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errRelOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -292,7 +291,7 @@ myExp1->typeAnalysis(ta);
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -305,7 +304,7 @@ myExp1->typeAnalysis(ta);
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -330,7 +329,7 @@ void GreaterNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -343,7 +342,7 @@ void GreaterNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -381,7 +380,7 @@ myExp1->typeAnalysis(ta);
 		else {
 			if (!myExp2->isFnCall())
 			{
-				ta->errEqOpd(this->pos());
+				ta->errEqOpd(myExp2->pos());
 			}
 			
 			if (left == right->asFn()->getReturnType())
@@ -399,7 +398,7 @@ myExp1->typeAnalysis(ta);
 		{
 			if (!myExp1->isFnCall())
 			{
-				ta->errEqOpd(this->pos());
+				ta->errEqOpd(myExp1->pos());
 			}
 			
 			if (left->asFn()->getReturnType() == right)
@@ -453,7 +452,7 @@ void EqualsNode::typeAnalysis(TypeAnalysis * ta){
 		else {
 			if (!myExp2->isFnCall())
 			{
-				ta->errEqOpd(this->pos());
+				ta->errEqOpd(myExp2->pos());
 			}
 			
 			if (left == right->asFn()->getReturnType())
@@ -471,7 +470,7 @@ void EqualsNode::typeAnalysis(TypeAnalysis * ta){
 		{
 			if (!myExp1->isFnCall())
 			{
-				ta->errEqOpd(this->pos());
+				ta->errEqOpd(myExp1->pos());
 			}
 			
 			if (left->asFn()->getReturnType() == right)
@@ -512,7 +511,7 @@ void OrNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isBool())
 		{
-			ta->errLogicOpd(this->pos());
+			ta->errLogicOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -525,7 +524,7 @@ void OrNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isBool())
 		{
-			ta->errLogicOpd(this->pos());
+			ta->errLogicOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -550,7 +549,7 @@ void AndNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isBool())
 		{
-			ta->errLogicOpd(this->pos());
+			ta->errLogicOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -563,7 +562,7 @@ void AndNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isBool())
 		{
-			ta->errLogicOpd(this->pos());
+			ta->errLogicOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -588,7 +587,7 @@ void DivideNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -601,7 +600,7 @@ void DivideNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -626,7 +625,7 @@ void TimesNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -639,7 +638,7 @@ void TimesNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -664,7 +663,7 @@ void PlusNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -677,7 +676,7 @@ void PlusNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -703,7 +702,7 @@ void MinusNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -716,7 +715,7 @@ void MinusNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(this->pos());
+			ta->errMathOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -742,8 +741,8 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 		error = true;
 	}
 	else {
-		auto formalTypes = fnType->asFn()->getFormalTypes();
-		if (formalTypes->getSize() != myArgs->size())
+		const TypeList * formalTypes = fnType->asFn()->getFormalTypes();
+		if (formalTypes->count() != myArgs->size())
 		{
 			ta->errArgCount(this->pos());
 			error = true;
@@ -756,18 +755,19 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 			++arrPos;
 		}
 
-/*		arrPos = 0;
-		 for (auto type : *formalTypes)
-		 {
-		 	argArr[arrPos]->typeAnalysis(ta);
-		 	auto argType = ta->nodeType(argArr[arrPos]);
-		 	if (type != argType)
-		 	{
-		 		ta->errArgMatch(this->pos());
-		 		error = true;
-		 	}
-		 	++arrPos;
-		 }*/
+		arrPos = 0;
+		const std::list<const DataType *> * types = formalTypes->getTypes(); 
+		for (auto type : *types)
+		{
+			argArr[arrPos]->typeAnalysis(ta);
+			auto argType = ta->nodeType(argArr[arrPos]);
+			if (type != argType)
+			{
+				ta->errArgMatch(myID->pos());
+				error = true;
+			}
+			++arrPos;
+		}
 	}
 	if (error)
 	{
@@ -896,13 +896,15 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	
 	if (currentFnType->isVoid() && !returnType->isVoid())
 	{
-		ta->extraRetValue(this->pos());
+		Position * p = new Position(myExp->pos(), myExp->pos());
+		ta->extraRetValue(p);
 		ta->nodeType(this, ErrorType::produce());
 		return;
 	}
 	if (!currentFnType->isVoid() && returnType->isVoid())
 	{
-		ta->errRetEmpty(this->pos());
+		Position * p = new Position(myExp->pos(), myExp->pos());
+		ta->errRetEmpty(p);
 		ta->nodeType(this, ErrorType::produce());
 		return;
 	}
@@ -910,8 +912,8 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	{
 		if (currentFnType != returnType->asFn()->getReturnType())
 		{	
-			const Position * p = new Position(myExp->pos(), myExp->pos());
-			ta->errRetWrong(myExp->pos());
+			Position * p = new Position(myExp->pos(), myExp->pos());
+			ta->errRetWrong(p);
 			ta->nodeType(this, ErrorType::produce());
 			return;
 		}
@@ -921,7 +923,8 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	
 	if (currentFnType != returnType)
 	{
-		ta->errRetWrong(this->pos());
+		Position * p = new Position(myExp->pos(), myExp->pos());
+		ta->errRetWrong(p);
 		ta->nodeType(this, ErrorType::produce());
 		return;
 	}
@@ -931,19 +934,19 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 }
 
 void OutputStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
-/*	mySrc->typeAnalysis(ta);
+	mySrc->typeAnalysis(ta);
 
 	const DataType * SrcType = ta->nodeType(mySrc);
 
 	if (SrcType->asFn() != nullptr)
 	{
-		ta->errWriteFn(this->pos());
+		ta->errOutputFn(this->pos());
 		ta->nodeType(this, ErrorType::produce());
 	}
 
 	if (SrcType->isVoid())
 	{
-		ta->errWriteVoid(this->pos());
+		ta->errOutputVoid(this->pos());
 		ta->nodeType(this, ErrorType::produce());
 	}
 
@@ -951,17 +954,17 @@ void OutputStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	{
 		ta->nodeType(this, SrcType);
 		return;
-	}*/
+	}
 }
 
 void InputStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
-/*/	myDst->typeAnalysis(ta);
+	myDst->typeAnalysis(ta);
 
 	const DataType * DstType = ta->nodeType(myDst);
 
 	if (DstType->asFn() != nullptr)
 	{
-		ta->errReadFn(this->pos());
+		ta->errAssignFn(this->pos());
 		ta->nodeType(this, ErrorType::produce());
 	}
 	
@@ -969,8 +972,6 @@ void InputStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnTy
 		ta->nodeType(this, DstType);
 		return;
 	}
-
-	//add errors*/
 }
 }
 
