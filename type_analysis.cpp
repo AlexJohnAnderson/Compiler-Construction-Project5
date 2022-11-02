@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "name_analysis.hpp"
 #include "type_analysis.hpp"
+#include <iterator>
 
 namespace drewgon{
 
@@ -88,26 +89,21 @@ void ExpNode::typeAnalysis(TypeAnalysis * ta){
 void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	//TODO: Note that this function is incomplete. 
 	// and needs additional code
-
+	bool alreadyReported;
 	//Do typeAnalysis on the subexpressions
 	myDst->typeAnalysis(ta);
 	mySrc->typeAnalysis(ta);
 
 	const DataType * tgtType = ta->nodeType(myDst);
 	const DataType * srcType = ta->nodeType(mySrc);
-
-	//While incomplete, this gives you one case for 
-	// assignment: if the types are exactly the same
-	// it is usually ok to do the assignment. One
-	// exception is that if both types are function
-	// names, it should fail type analysis
+	
 	if (tgtType->asFn() || (srcType->asFn() && !mySrc->isFnCall()))
 	{
-		const Position * p = new Position(myDst->pos(), myDst->pos());
+		Position * p = new Position(myDst->pos(), myDst->pos());
 		ta->errAssignOpd(p);
-		const Position * q = new Position(mySrc->pos(), mySrc->pos());
+		Position * q = new Position(mySrc->pos(), mySrc->pos());
 		ta->errAssignOpd(q);
-		
+		alreadyReported = true;
 	}
 
 	if (mySrc->isFnCall() && tgtType == srcType->asFn()->getReturnType()) {
@@ -125,9 +121,11 @@ void AssignExpNode::typeAnalysis(TypeAnalysis * ta){
 	// also tell the typeAnalysis object that the
 	// analysis has failed, meaning that main.cpp
 	// will print "Type check failed" at the end
-	//ta->errAssignOpr(myDst->pos());
-	//ta->errAssignOpr(mySrc->pos());
-
+	if(!alreadyReported)
+	{
+		ta->errAssignOpr(this->pos());
+		
+	}
 
 	//Note that reporting an error does not set the
 	// type of the current node, so setting the node
@@ -745,7 +743,7 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	}
 	else {
 		auto formalTypes = fnType->asFn()->getFormalTypes();
-		if (formalTypes->size() != myArgs->size())
+		if (formalTypes->getSize() != myArgs->size())
 		{
 			ta->errArgCount(this->pos());
 			error = true;
@@ -758,18 +756,18 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 			++arrPos;
 		}
 
-		arrPos = 0;
-		for (auto type : *formalTypes)
-		{
-			argArr[arrPos]->typeAnalysis(ta);
-			auto argType = ta->nodeType(argArr[arrPos]);
-			if (type != argType)
-			{
-				ta->errArgMatch(this->pos());
-				error = true;
-			}
-			++arrPos;
-		}
+/*		arrPos = 0;
+		 for (auto type : *formalTypes)
+		 {
+		 	argArr[arrPos]->typeAnalysis(ta);
+		 	auto argType = ta->nodeType(argArr[arrPos]);
+		 	if (type != argType)
+		 	{
+		 		ta->errArgMatch(this->pos());
+		 		error = true;
+		 	}
+		 	++arrPos;
+		 }*/
 	}
 	if (error)
 	{
@@ -885,6 +883,7 @@ void PostIncStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFn
 }
 
 void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
+	
 	const DataType * returnType;
 	if (myExp)
 	{
@@ -897,7 +896,7 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	
 	if (currentFnType->isVoid() && !returnType->isVoid())
 	{
-		ta->errRetWrong(this->pos());
+		ta->extraRetValue(this->pos());
 		ta->nodeType(this, ErrorType::produce());
 		return;
 	}
@@ -910,8 +909,9 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	if (returnType->asFn())
 	{
 		if (currentFnType != returnType->asFn()->getReturnType())
-		{
-			ta->errRetWrong(this->pos());
+		{	
+			const Position * p = new Position(myExp->pos(), myExp->pos());
+			ta->errRetWrong(myExp->pos());
 			ta->nodeType(this, ErrorType::produce());
 			return;
 		}
@@ -973,3 +973,4 @@ void InputStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnTy
 	//add errors*/
 }
 }
+
