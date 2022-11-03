@@ -215,7 +215,7 @@ void LessEqNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(myExp1->pos());
+			ta->errRelOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -228,7 +228,7 @@ void LessEqNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(myExp2->pos());
+			ta->errRelOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -291,7 +291,7 @@ myExp1->typeAnalysis(ta);
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(myExp1->pos());
+			ta->errRelOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -304,7 +304,7 @@ myExp1->typeAnalysis(ta);
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(myExp2->pos());
+			ta->errRelOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -329,7 +329,7 @@ void GreaterNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!left->isInt())
 		{
-			ta->errMathOpd(myExp1->pos());
+			ta->errRelOpd(myExp1->pos());
 		}
 	}
 	else {
@@ -342,7 +342,7 @@ void GreaterNode::typeAnalysis(TypeAnalysis * ta){
 	{
 		if (!right->isInt())
 		{
-			ta->errMathOpd(myExp2->pos());
+			ta->errRelOpd(myExp2->pos());
 		}
 	}
 	else {
@@ -737,7 +737,7 @@ void CallExpNode::typeAnalysis(TypeAnalysis * ta){
 	std::string myKind = sym->kindToString(sym->getKind());
 	const DataType * fnType = sym->getDataType();
 	if (myKind != "fn") {
-		ta->errCallee(this->pos());
+		ta->errCallee(myID->pos());
 		error = true;
 	}
 	else {
@@ -785,15 +785,11 @@ void CallStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnTyp
 }
 
 void ForStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
-	ta->nodeType(this, BasicType::produce(VOID));
-}
-
-void WhileStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
 	myCond->typeAnalysis(ta);
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool() || CondType->asFn()->getReturnType()->isBool())
+	if (CondType->isBool())
 	{
 		for (auto stmt : *myBody)
 		{
@@ -803,7 +799,26 @@ void WhileStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnTy
 		return;
 	}
 
-	ta->errLoopCond(this->pos());
+	ta->errLoopCond(myCond->pos());
+	ta->nodeType(this, ErrorType::produce());
+}
+
+void WhileStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
+	myCond->typeAnalysis(ta);
+
+	const DataType * CondType = ta->nodeType(myCond);
+
+	if (CondType->isBool())
+	{
+		for (auto stmt : *myBody)
+		{
+			stmt->typeAnalysis(ta, currentFnType);
+		}
+		ta->nodeType(this, BasicType::produce(VOID));
+		return;
+	}
+
+	ta->errLoopCond(myCond->pos());
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -812,7 +827,7 @@ void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool() || CondType->asFn()->getReturnType()->isBool())
+	if (CondType->isBool())
 	{
 		for (auto truebody : *myBodyTrue)
 		{
@@ -828,7 +843,7 @@ void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 		return;
 	}
 	
-	ta->errIfCond(this->pos());
+	ta->errIfCond(myCond->pos());
 	ta->nodeType(this, ErrorType::produce());
 }
 
@@ -837,7 +852,7 @@ void IfStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType)
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool() || CondType->asFn()->getReturnType()->isBool())
+	if (CondType->isBool())
 	{
 		for (auto stmt : *myBody)
 		{
@@ -846,9 +861,11 @@ void IfStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType)
 		ta->nodeType(this, BasicType::produce(VOID));
 		return;
 	}
-
-	ta->errIfCond(this->pos());
-	ta->nodeType(this, ErrorType::produce());
+	else{
+		ta->errIfCond(myCond->pos());
+		ta->nodeType(this, ErrorType::produce());
+	}
+	
 
 }
 
@@ -911,9 +928,8 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	if (returnType->asFn())
 	{
 		if (currentFnType != returnType->asFn()->getReturnType())
-		{	
-			Position * p = new Position(myExp->pos(), myExp->pos());
-			ta->errRetWrong(p);
+		{
+			ta->errRetWrong(myExp->pos());
 			ta->nodeType(this, ErrorType::produce());
 			return;
 		}
@@ -923,8 +939,7 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	
 	if (currentFnType != returnType)
 	{
-		Position * p = new Position(myExp->pos(), myExp->pos());
-		ta->errRetWrong(p);
+		ta->errRetWrong(myExp->pos());
 		ta->nodeType(this, ErrorType::produce());
 		return;
 	}

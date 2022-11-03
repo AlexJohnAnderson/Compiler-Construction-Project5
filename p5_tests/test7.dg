@@ -1,13 +1,12 @@
-void func(int a){
+int a;
+int func(int a){
 	int b;
 	b = a * 2;
 	return b;
 }
 
 int main(){
-	bool param;
-	param = true;
-	func(param);
+	a();
+	func(a);
+	output(func(a));
 }
-
-	

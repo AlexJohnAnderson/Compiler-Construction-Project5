@@ -1,7 +1,37 @@
-int func(){
-    return 10;
-    output(func());
+int a;
+void func(){
+    int y;
+}
+
+int ifTest(){
+    if(a)
+    {
+        return 10;
+    }
+}
+
+int forTest(){
+    for(int i; 10; i++)
+    {
+        return 10;
+    }
+}
+
+void whileTest(){
+    int a;
+    a = -12;
+    while(a)
+    {
+        return true;
+    }
 }
 void main(){
     output(main());
+    if(func())
+    {
+        return 55;
+    }
 }
+
+
+

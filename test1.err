@@ -1,0 +1,7 @@
+Only 1 input file allowedtest1.dg
+Usage: dgc <infile>
+ [-t <tokensFile>]: Output tokens to <tokensFile>
+ [-p]: Parse the input to check syntax
+ [-u <unparseFile>]: Output canonical program form
+ [-n <nameFile>]: Output program with IDs annotated with symbols
+ [-c]: Perform type analysis / typecheck the program
