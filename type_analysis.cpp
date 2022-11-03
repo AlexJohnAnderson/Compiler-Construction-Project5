@@ -73,6 +73,7 @@ void AssignStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 	// should be
 	auto subType = ta->nodeType(myExp);
 
+	//sdfasfasf
 	// As error returns null if subType is NOT an error type
 	// otherwise, it returns the subType itself
 	if (subType->asError()){
