@@ -20,17 +20,17 @@ int forTest(){
 void whileTest(){
     int a;
     a = -12;
-    while(a)
+    while(func())
     {
-        return true;
+        return;
     }
 }
 void main(){
-    output(main());
     if(func())
     {
-        return 55;
+        return;
     }
+    output(main());
 }
 
 

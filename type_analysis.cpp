@@ -789,18 +789,20 @@ void ForStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool())
-	{
+	if (CondType->isBool()|| currentFnType->isBool())
+	{	
 		for (auto stmt : *myBody)
 		{
 			stmt->typeAnalysis(ta, currentFnType);
 		}
 		ta->nodeType(this, BasicType::produce(VOID));
 		return;
-	}
 
+	}
 	ta->errLoopCond(myCond->pos());
 	ta->nodeType(this, ErrorType::produce());
+
+
 }
 
 void WhileStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType){
@@ -808,7 +810,7 @@ void WhileStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnTy
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool())
+	if (CondType->isBool() || currentFnType->isBool())
 	{
 		for (auto stmt : *myBody)
 		{
@@ -827,7 +829,7 @@ void IfElseStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool())
+	if (CondType->isBool()||currentFnType->isBool())
 	{
 		for (auto truebody : *myBodyTrue)
 		{
@@ -852,7 +854,7 @@ void IfStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnType)
 
 	const DataType * CondType = ta->nodeType(myCond);
 
-	if (CondType->isBool())
+	if (CondType->isBool() || currentFnType->isBool())
 	{
 		for (auto stmt : *myBody)
 		{
@@ -911,7 +913,7 @@ void ReturnStmtNode::typeAnalysis(TypeAnalysis * ta, const DataType * currentFnT
 		returnType = BasicType::produce(VOID);
 	}
 	
-	if (currentFnType->isVoid() && !returnType->isVoid())
+	if (currentFnType->isVoid() && (returnType->isBool() || returnType->isInt()))
 	{
 		Position * p = new Position(myExp->pos(), myExp->pos());
 		ta->extraRetValue(p);
